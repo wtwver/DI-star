@@ -8,3 +8,5 @@ results
 tb_stat
 tmp_files
 tmp_log
+build
+replay

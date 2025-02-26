@@ -13,7 +13,7 @@ learner:
   agent: 'default'  # agent name
   job_type: 'train' # 'train' or 'test'
   load_path: '' # load checkpoint when resume
-  use_cuda: True  # whether to use cuda
+  use_cuda: False  # whether to use cuda
   use_distributed: False  # whether to use distributed training
   use_value_feature: False  # whether to use value feature
   learning_rate: 0.001  
