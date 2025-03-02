@@ -259,8 +259,9 @@ class BaseLearner(ABC):
         # before run hook
         self.call_hook('before_run')
 
-        for _ in range(max_iterations):
+        for i in range(max_iterations):
             data = self._get_iter_data()
+            print('==123',i, max_iterations, data)
             # before iter hook
             self.call_hook('before_iter')
             self._train(data)

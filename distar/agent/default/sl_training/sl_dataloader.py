@@ -94,7 +94,7 @@ def worker_loop(cfg, paths, main_traj_pipes_c, shared_step_data, worker_queue, w
                     return
             if data is not None:
                 break
-        print(data)
+        print('==calling send_data', data)
         send_data(worker_queue, main_traj_pipes_c, worker_index, data, shared_step_data, cfg.learner.data.trajectory_length)
 
 

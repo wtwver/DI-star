@@ -348,11 +348,11 @@ class ReplayDecoder:
         return traj_data
 
     def _parse_replay_info(self):
-        print("===_parse_replay_info", self._replay_path)
         try: 
             replay_info = self._controller.replay_info(replay_path=self._replay_path)
         except:
-            print('parse err on ', self._replay_path)        ret = dict()
+            print('parse err on ', self._replay_path)        
+        ret = dict()
         ret['race'] = [RACE_DICT[p.player_info.race_actual] for p in replay_info.player_info]
         ret['result'] = [RESULT_DICT[p.player_result.result] for p in replay_info.player_info]
         ret['player_type'] = [p.player_info.type for p in replay_info.player_info]
