@@ -10,3 +10,4 @@ tmp_files
 tmp_log
 build
 replay
+.DS_Store

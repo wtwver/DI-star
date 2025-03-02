@@ -77,6 +77,9 @@ def worker_loop(cfg, paths, main_traj_pipes_c, shared_step_data, worker_queue, w
         replay_decoder = ReplayDecoder(cfg)
         data_idx = 0
         player_idx = 0
+    if len(paths)==0:
+        print('no paths')
+        return 
     while True:
         while True:
             if cfg.learner.data.remote:
@@ -86,11 +89,12 @@ def worker_loop(cfg, paths, main_traj_pipes_c, shared_step_data, worker_queue, w
                 player_idx = (player_idx + 1) % 2
                 if player_idx == 0:
                     data_idx += 1
-                if data_idx == len(paths):
+                if data_idx >= len(paths):
                     print('ran out of data, training is done!')
                     return
             if data is not None:
                 break
+        print(data)
         send_data(worker_queue, main_traj_pipes_c, worker_index, data, shared_step_data, cfg.learner.data.trajectory_length)
 
 
