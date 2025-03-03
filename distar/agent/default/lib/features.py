@@ -281,9 +281,12 @@ class Feature(collections.namedtuple(
 
     def unpack(self, obs):
         """Return a correctly shaped numpy array for this feature."""
+        # print(f'=layer_set {self.layer_set} name {self.name}')
         planes = getattr(obs.feature_layer_data, self.layer_set)
         plane = getattr(planes, self.name)
-        return self.unpack_layer(plane)
+        a = self.unpack_layer(plane)
+        # print('=self.unpack_layer', a)
+        return a
 
     @staticmethod
     @sw.decorate
@@ -291,6 +294,7 @@ class Feature(collections.namedtuple(
         """Return a correctly shaped numpy array given the feature layer bytes."""
         size = point.Point.build(plane.size)
         if size == (0, 0):
+            print(f'plane.size {plane.size} plane.data {plane.data}')
             # New layer that isn't implemented in this SC2 version.
             return None
         data = np.frombuffer(plane.data, dtype=Feature.dtypes[plane.bits_per_pixel])
@@ -301,6 +305,7 @@ class Feature(collections.namedtuple(
                 # to some padding bits at the end of the string which are incorrectly
                 # interpreted as data.
                 data = data[:size.x * size.y]
+        # print('data', data, plane.bits_per_pixel)
         return data.reshape(size.y, size.x)
 
     @staticmethod
@@ -320,7 +325,8 @@ class Feature(collections.namedtuple(
 
 
 class MinimapFeatures(collections.namedtuple("MinimapFeatures", [
-    "height_map", "visibility_map", "creep", "player_relative", "alerts", "pathable", "buildable"])):
+    "height_map", "visibility_map", "creep", "player_relative"])):
+    # "height_map", "visibility_map", "creep", "player_relative", "alerts", "pathable", "buildable"])):
     """The set of minimap feature layers."""
     __slots__ = ()
 
@@ -345,9 +351,9 @@ MINIMAP_FEATURES = MinimapFeatures(
     creep=(2, FeatureType.CATEGORICAL, colors.CREEP_PALETTE),
     player_relative=(5, FeatureType.CATEGORICAL,
                      colors.PLAYER_RELATIVE_PALETTE),
-    alerts=(2, FeatureType.CATEGORICAL, colors.winter),
-    pathable=(2, FeatureType.CATEGORICAL, colors.winter),
-    buildable=(2, FeatureType.CATEGORICAL, colors.winter),
+    # alerts=(2, FeatureType.CATEGORICAL, colors.winter),
+    # pathable=(2, FeatureType.CATEGORICAL, colors.winter),
+    # buildable=(2, FeatureType.CATEGORICAL, colors.winter),
 )
 
 
@@ -469,6 +475,7 @@ class Features(object):
         raw = obs.observation.raw_data
         # spatial info
         for f in MINIMAP_FEATURES:
+            # print('=f', f)
             d = f.unpack(obs.observation).copy()
             d = torch.from_numpy(d)
             padding_y = SPATIAL_SIZE[0] - d.shape[0]

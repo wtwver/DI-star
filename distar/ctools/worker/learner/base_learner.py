@@ -199,6 +199,7 @@ class BaseLearner(ABC):
             data = self._model(data)
             log_vars = self._loss.compute_loss(data)
             loss = log_vars['total_loss']
+            print('loss',loss)
         self._log_buffer['forward_time'] = self._timer.value
 
         with self._timer:
@@ -261,7 +262,7 @@ class BaseLearner(ABC):
 
         for i in range(max_iterations):
             data = self._get_iter_data()
-            print('==123',i, max_iterations, data)
+            # print('=123',i, max_iterations)
             # before iter hook
             self.call_hook('before_iter')
             self._train(data)

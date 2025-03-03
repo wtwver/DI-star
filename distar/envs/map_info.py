@@ -258,7 +258,7 @@ MAPS = {
 }
 
 
-def get_map_size(map_name, cropped=True):
+def get_map_size(map_name, cropped=False):
     return MAPS[map_name][2 if cropped else 3]
 
 

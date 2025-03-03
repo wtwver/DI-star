@@ -348,10 +348,11 @@ class ReplayDecoder:
         return traj_data
 
     def _parse_replay_info(self):
-        try: 
-            replay_info = self._controller.replay_info(replay_path=self._replay_path)
-        except:
-            print('parse err on ', self._replay_path)        
+        # try: 
+        replay_info = self._controller.replay_info(replay_path=self._replay_path)
+        # except:
+            # print('parse err on ', self._replay_path)
+            # return        
         ret = dict()
         ret['race'] = [RACE_DICT[p.player_info.race_actual] for p in replay_info.player_info]
         ret['result'] = [RESULT_DICT[p.player_result.result] for p in replay_info.player_info]
@@ -382,7 +383,6 @@ class ReplayDecoder:
                     print(f'Decode replay ERROR: {replay_path}, no corresponded game version: {version}, use latest in stead.')
                     version = 'latest'
             self._player_index = player_index
-            print(f'Start decoding replay with player {player_index}, path: {replay_path}')
             if self._version != version or self._restart_count == 10:
                 if self._version is not None:
                     self._sc2_process.close()
@@ -402,17 +402,20 @@ class ReplayDecoder:
             self._restart_count += 1
             start_time = time.time()
             data = self._parse_replay()
+
             if len(data) < self._minimum_action_length:
                 return None
             else:
                 game_loops = self._replay_info['game_steps']
                 print(f'{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())} path: {replay_path}, game step: {game_loops}, action length: {len(data)}, cost time: {time.time() - start_time:.2f}, per step time: {(time.time() - start_time) / len(data)}')
+                print(f'decoded replay with player {player_index}, path: {replay_path}')
                 return data
         except Exception as e:
             print(f'{os.getpid()} [ERROR] parse replay error', e)
             print(''.join(traceback.format_tb(e.__traceback__)))
             self._close()
             return None
+
 
     def _restart(self):
         for i in range(10):

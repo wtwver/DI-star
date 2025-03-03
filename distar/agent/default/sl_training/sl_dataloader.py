@@ -86,6 +86,7 @@ def worker_loop(cfg, paths, main_traj_pipes_c, shared_step_data, worker_queue, w
                 data = adapter.pull(fs_type='pyarrow', sleep_time=0.2)
             else:
                 data = replay_decoder.run(paths[data_idx], player_idx)
+                print(data_idx, data)
                 player_idx = (player_idx + 1) % 2
                 if player_idx == 0:
                     data_idx += 1
@@ -156,7 +157,8 @@ class SLDataloader:
             traj_lens.append(traj_len)
             if end_episode:
                 self.worker_indices[i] = self.worker_queue.get()
-                print(f'rank: {self.rank}, left data: {self.worker_queue.qsize()}')
+                # print(f'rank: {self.rank}, left data: {self.worker_queue.qsize()}')
+                print(f'rank: {self.rank}')
 
         batch_data = self.shared_step_data
         if self.use_cuda:
