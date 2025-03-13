@@ -62,8 +62,7 @@ class Model(nn.Module):
         lstm_input, scalar_context, baseline_feature, entity_embeddings, map_skip = \
             self.encoder(spatial_info, entity_info, scalar_info, entity_num)
         lstm_output, out_state = self.core_lstm(lstm_input.unsqueeze(dim=0), hidden_state)
-        action_info, selected_units_num, logit, extra_units = self.policy(lstm_output.squeeze(dim=0), entity_embeddings, map_skip,
-                                                             scalar_context, entity_num)
+        action_info, selected_units_num, logit, extra_units = self.policy(lstm_output.squeeze(dim=0), entity_embeddings, map_skip, scalar_context, entity_num)
         log_action_probs = {}
         for k, action in action_info.items():
             dist = torch.distributions.Categorical(logits=logit[k])
