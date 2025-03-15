@@ -1,13 +1,13 @@
 =SLLearner._train(data)
 logits, infer_action_info, hidden_state =  self._model.sl_train(**data, hidden_state)
 
-==Model.sl_train()
-lstm_input, = self.encoder(spatial_info, entity_info, scalar_info, entity_num)
+==Model.sl_train(spatial_info, entity_info, scalar_info, entity_num)
+lstm_input, scalar_context, baseline_feature, entity_embeddings, map_skip = self.encoder(spatial_info, entity_info, scalar_info, entity_num)
 lstm_output, out_state = self.core_lstm(lstm_input, hidden_state)
-action_info, selected_units_num, logit = self.policy.train_forward(lstm_output,
+action_info, selected_units_num, logit = self.policy.train_forward(lstm_output, entity_embeddings, map_skip, scalar_context, entity_num, action_info, selected_units_num)
 return logits, action_info, out_state
 
-===Model.policy.train_forward(lstm_output, scalar_context, action_info)
+===Model.policy.train_forward(lstm_output, entity_embeddings, map_skip, scalar_context, entity_num, action_info, selected_units_num)
 logit['action_type'], action['action_type'], embeddings = self.action_type_head(lstm_output, scalar_context, action_info['action_type'])
 return action, selected_units_num, logit
 

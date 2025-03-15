@@ -14,7 +14,7 @@ from distar.ctools.utils.dist_helper import get_rank, get_world_size
 from distar.agent.default.lib.features import fake_step_data
 from distar.agent.default.replay_decoder import ReplayDecoder
 from distar.ctools.worker.coordinator.adapter import Adapter
-
+import traceback
 
 def send_data(worker_queue, main_traj_pipes_c, worker_index, data, shared_step_data, trajectory_length):
     worker_queue.put(worker_index)
@@ -80,13 +80,23 @@ def worker_loop(cfg, paths, main_traj_pipes_c, shared_step_data, worker_queue, w
     if len(paths)==0:
         print('no paths')
         return 
+    
+    import pickle
+    with open('paths.pkl', 'wb') as f:
+        pickle.dump(paths, f)
+    
+    print(cfg)
+    print(paths)
     while True:
         while True:
             if cfg.learner.data.remote:
                 data = adapter.pull(fs_type='pyarrow', sleep_time=0.2)
             else:
+                print('data_idx', data_idx)
+                # data = replay_decoder.run(paths[0], 0)
                 data = replay_decoder.run(paths[data_idx], player_idx)
-                print(data_idx, data)
+                if data is not None:
+                    print('==calling send_data', data_idx, paths[data_idx], player_idx)
                 player_idx = (player_idx + 1) % 2
                 if player_idx == 0:
                     data_idx += 1
@@ -95,7 +105,6 @@ def worker_loop(cfg, paths, main_traj_pipes_c, shared_step_data, worker_queue, w
                     return
             if data is not None:
                 break
-        print('==calling send_data', data)
         send_data(worker_queue, main_traj_pipes_c, worker_index, data, shared_step_data, cfg.learner.data.trajectory_length)
 
 

@@ -8,7 +8,7 @@ from .model.model import Model
 from .sl_training.sl_dataloader import SLDataloader, FakeDataloader
 from .sl_training.sl_loss import SupervisedLoss
 from distar.ctools.torch_utils.grad_clip import build_grad_clip
-
+import traceback
 
 class SLLearner(BaseLearner):
     def _setup_model(self):
