@@ -81,12 +81,6 @@ def worker_loop(cfg, paths, main_traj_pipes_c, shared_step_data, worker_queue, w
         print('no paths')
         return 
     
-    import pickle
-    with open('paths.pkl', 'wb') as f:
-        pickle.dump(paths, f)
-    
-    print(cfg)
-    print(paths)
     while True:
         while True:
             if cfg.learner.data.remote:
@@ -158,6 +152,8 @@ class SLDataloader:
         return self
 
     def __next__(self):
+        print("__next__")
+
         new_episodes = []
         traj_lens = []
         for i in range(self.batch_size):
@@ -176,6 +172,8 @@ class SLDataloader:
             self.main_traj_pipes_p[self.worker_indices[i]].send(i)
         batch_data['traj_lens'] = traj_lens
         batch_data['new_episodes'] = new_episodes
+        
+        print("batch_data", batch_data)
         return batch_data
 
 

@@ -39,7 +39,7 @@ learner:
     epochs: 10          # repeat num of replay paths
     batch_size: 2  # training batch size
     trajectory_length: 4 
-    num_workers: 1      # should be larger than batch size
+    num_workers: 2      # should be larger than batch size
   loss_weight:  # multiple heads loss weight
     # sl loss
     action_type: 30.0
